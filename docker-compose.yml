@@ -1,4 +1,4 @@
-version: "3"
+version: "1"
 services:
   train:
     image: atorres/train:v1
@@ -16,5 +16,5 @@ services:
     volumes:
       - ./models:/app/models
       - ./logs:/app/logs/
-      
+
     command: uvicorn src.predict:app --host 0.0.0.0 --port 5002

@@ -1,5 +1,5 @@
 import joblib
-from transformers.transformers import (
+from models import (
     MissingIndicator,
     CabinOnlyLetter,
     CategoricalImputerEncoder,
@@ -13,6 +13,7 @@ from transformers.transformers import (
 import pandas as pd
 
 from . import config
+from . import prep_data
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
