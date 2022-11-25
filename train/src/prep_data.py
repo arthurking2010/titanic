@@ -12,7 +12,7 @@ from sklearn.pipeline import Pipeline
 
 from sklearn.metrics import accuracy_score, roc_auc_score
 from sklearn.model_selection import train_test_split
-from sklearn.impute import SimpleImputer
+from sklearn.impute import MissingIndicator, SimpleImputer
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LogisticRegression
 
@@ -56,7 +56,7 @@ def data_retrieval(url):
     def get_first_cabin(row):
         try:
             return row.split()[0]
-        except:
+        except Exception:
             return np.nan
     
     # helper function 2
@@ -78,19 +78,16 @@ def data_retrieval(url):
     data['title'] = data['name'].apply(get_title)
     
     # Droping irrelevant columns
-    data.drop(columns=DROP_COLS, 1, inplace=True)
+    data.drop(columns=DROP_COLS, axis=1, inplace=True)
     
     data.to_csv(DATASETS_DIR + RETRIEVED_DATA, index=False)
     
-    return print('Data stored in {}'.format(DATASETS_DIR + RETRIEVED_DATA))
+    print('Data stored in {}'.format(DATASETS_DIR + RETRIEVED_DATA))
 
     class MissingIndicator(BaseEstimator, TransformerMixin):
     
         def __init__(self, variables=None):
-            if not isinstance(variables, list):
-                self.variables = [variables]
-            else:
-                self.variables = variables
+            self.variables = variables if isinstance(variables, list) else [variables]
     
         def fit(self, X, y=None):
             return self
@@ -290,11 +287,3 @@ for d in [X_test[i:i+1].to_json(orient='records') for i in range(25)]:
 
 prueba = '{"pclass":1,"sex":"male","age":58.0,"sibsp":0,"parch":2,"fare":113.275,"cabin":"D48","embarked":"C","title":"Mr"}'
 type(json.loads(prueba) )
-
-tmp = pd.DataFrame(X_test, columns=list(sort_feats.ordered_features))
-tmp['y_true'] = np.array(y_test)
-tmp['y_pred'] = model.predict(X_test)
-tmp['proba_pred'] = model.predict_proba(X_test)[:,1]
-
-tmp.head(10)
-
